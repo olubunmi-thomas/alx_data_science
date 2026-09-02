@@ -1,4 +1,3 @@
-
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -10,7 +9,7 @@ def style_plot(
     figsize=None,
     grid=True,
     remove_spine=True,
-    spine_width=1.5,
+    spine_width=1.2,
     label_fontsize=11,
     title_fontsize=13
 ):
@@ -24,13 +23,20 @@ def style_plot(
         ax.set_ylabel(ylabel, fontsize=label_fontsize)
 
     if title:
-        ax.set_title(title, fontsize=title_fontsize, fontweight="bold")
+        ax.set_title(
+            title,
+            fontsize=title_fontsize,
+            fontweight="bold"
+        )
 
     if grid:
         ax.grid(alpha=0.3)
 
     if remove_spine:
-        for spine in ax.spines.values():
-            spine.set_visible(False)
+        sns.despine(ax=ax, top=True, right=True)
+
+    # Set spine width
+    for spine in ax.spines.values():
+        spine.set_linewidth(spine_width)
 
     return ax
