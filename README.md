@@ -10,31 +10,31 @@ This repository contains my data science learning projects, exercises, and pract
 
 
 
-\- Python for Data Science
+- Python for Data Science
 
-\- Statistics and Probability
+- Statistics and Probability
 
-\- Exploratory Data Analysis (EDA)
+- Exploratory Data Analysis (EDA)
 
-\- Data Visualization
+- Data Visualization
 
-\- Linear Regression
+- Linear Regression
 
-\- Logistic Regression
+- Logistic Regression
 
-\- Decision Trees
+- Decision Trees
 
-\- Ensemble Learning
+- Ensemble Learning
 
-\- Model Evaluation
+- Model Evaluation
 
-\- Feature Engineering
+- Feature Engineering
 
-\- Model Selection and Hyperparameter Tuning
+- Model Selection and Hyperparameter Tuning
 
 
 
-\## 📂 Project Structure
+## 📂 Project Structure
 
 
 
@@ -57,7 +57,7 @@ ALX Data Science/
 ├── .gitignore
 
 └── README.md
-
+```
 
 ## 🛠️ Tools & Technologies
 - Python
