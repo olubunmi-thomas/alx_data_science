@@ -117,6 +117,25 @@ def _(mo):
     """)
     return
 
+@app.cell
+def _():
+    def load_population_data():
+        """Download the population dataset from GitHub and return it as a DataFrame."""
+
+        data_url = (
+            "https://raw.githubusercontent.com/"
+            "olubunmi-thomas/alx_data_science/main/"
+            "DS-5%20Supervised%20Learning%20II%20%E2%80%93%20Classification%20%26%20Model%20Selection/"
+            "data/world_population.csv"
+        )
+
+        data = pd.read_csv(data_url)
+
+        return data
+
+    return load_population_data,
+
+
 
 @app.cell
 def _():
@@ -192,6 +211,7 @@ def _(LabelEncoder, df_raw):
     print(df['Pop_class'].value_counts())
     print(f'\nDataFrame shape: {df.shape}')
     print(f'Class labels: {list(le.classes_)}')
+
     return df, feature_cols, le
 
 
@@ -310,7 +330,7 @@ def _():
         
         plot_tree(
             model,
-            feature_names=feature_cols,
+            feature_names=feature_names,
             class_names=class_names,
             filled=True,
             rounded=True
@@ -466,13 +486,13 @@ def _():
     def depth_vs_accuracy(df, feature_cols, target_col, depths):
         # Insert your code here
         """Evaluate Decision Tree accuracy across different tree depths."""
-        
+
         results = []
-    
+
         # Define features and target
         X = df[feature_cols]
         y = df[target_col]
-    
+
         # Fixed 80-20 split
         X_train, X_test, y_train, y_test = train_test_split(
             X,
@@ -480,58 +500,64 @@ def _():
             test_size=0.2,
             random_state=42
         )
-    
+
         # Train a tree for each depth
         for depth in depths:
-    
+
             model = DecisionTreeClassifier(
                 max_depth=depth,
                 random_state=42
             )
-    
+
             model.fit(X_train, y_train)
-    
+
             # Predictions
             train_pred = model.predict(X_train)
             test_pred = model.predict(X_test)
-    
+
             # Accuracy
             train_accuracy = accuracy_score(y_train, train_pred)
             test_accuracy = accuracy_score(y_test, test_pred)
-    
+
             results.append({
                 "depth": depth,
                 "train_accuracy": train_accuracy,
                 "test_accuracy": test_accuracy
             })
-    
+
         # Convert results to DataFrame
         results_df = pd.DataFrame(results)
-    
+
         # Plot accuracy curves
         plt.figure(figsize=(9, 5))
-    
+
         plt.plot(
             results_df["depth"],
             results_df["train_accuracy"],
             marker="o",
             label="Training Accuracy"
         )
-    
+
         plt.plot(
             results_df["depth"],
             results_df["test_accuracy"],
             marker="o",
             label="Test Accuracy"
         )
-    
+
         plt.xlabel("Maximum Tree Depth")
         plt.ylabel("Accuracy")
         plt.title("Decision Tree Depth vs Classification Accuracy")
         plt.legend()
         plt.grid(True, alpha=0.3)
         plt.show()
+
+        # Return the results DataFrame from the function
+        return results_df
+
     ### END FUNCTION
+
+    # Return the function from the Marimo cell
     return (depth_vs_accuracy,)
 
 
