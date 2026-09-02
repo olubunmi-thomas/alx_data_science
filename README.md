@@ -71,7 +71,7 @@ ALX Data Science/
 - Statsmodels
 - Git & GitHub
 
-##🎯 Learning Objectives
+## 🎯 Learning Objectives
 
 The main objective of this repository is to develop practical data science skills by applying statistical and machine learning concepts to real-world datasets.
 
@@ -84,7 +84,7 @@ The projects focus on:
 - Communicating findings and business implications.
 - Developing reproducible and professional data science workflows.
 
-##📊 Machine Learning
+## 📊 Machine Learning
 
 The repository includes practical work covering both regression and classification problems.
 
@@ -101,7 +101,7 @@ Examples include:
 - Stacking
 - Model evaluation and selection
 
-##📈 Portfolio Focus
+## 📈 Portfolio Focus
 
 My goal is to develop projects that demonstrate not only the ability to write Python code, but also the ability to:
 
@@ -112,7 +112,7 @@ My goal is to develop projects that demonstrate not only the ability to write Py
 - Interpret results
 - Translate findings into actionable business recommendations
 
-##🚀 Future Work
+## 🚀 Future Work
 
 This repository will continue to grow as I develop more advanced skills in:
 
@@ -124,7 +124,7 @@ This repository will continue to grow as I develop more advanced skills in:
 - Data visualization
 - End-to-end data science projects
 
-#👤 Author
+# 👤 Author
 
 **Thomas Oluwasegun Olubunmi**
 
