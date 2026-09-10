@@ -236,7 +236,34 @@ def _():
     ### START FUNCTION
     def prepare_crop_features(df):
         # Your code here
-        pass
+        feature_cols = [
+                "Elevation",
+                "Rainfall",
+                "Min_temperature_C",
+                "Max_temperature_C",
+                "Ave_temps",
+                "Soil_fertility",
+                "pH",
+                "Pollution_level",
+                "Slope",
+                "Plot_size"
+            ]
+        
+        # Select features and target, then remove missing values
+        df_prepared = df[feature_cols + ["Crop_type"]].dropna().copy()
+    
+        # Encode Crop_type
+        le = LabelEncoder()
+        df_prepared["Crop_encoded"] = le.fit_transform(
+            df_prepared["Crop_type"]
+        )
+    
+        # Keep only features and encoded target
+        df_prepared = df_prepared[
+            feature_cols + ["Crop_encoded"]
+        ]
+    
+        return df_prepared, feature_cols, le
     ### END FUNCTION
     return (prepare_crop_features,)
 
@@ -310,7 +337,40 @@ def _():
     ### START FUNCTION
     def train_crop_classifier(df_prepared, feature_cols, random_state=42, model_type='logistic'):
         # Your code here
-        pass
+        # Define features and target
+        X = df_prepared[feature_cols]
+        y = df_prepared["Crop_encoded"]
+
+        # Split data into training and testing sets
+        X_train, X_test, y_train, y_test = train_test_split(
+            X,
+            y,
+            test_size=0.20,
+            random_state=random_state,
+            stratify=y
+        )
+
+        # Select model
+        if model_type == "logistic":
+            model = LogisticRegression(
+                max_iter=1000
+            )
+
+        elif model_type == "random_forest":
+            model = RandomForestClassifier(
+                n_estimators=100,
+                random_state=random_state
+            )
+
+        else:
+            raise ValueError(
+                "model_type must be 'logistic' or 'random_forest'"
+            )
+
+        # Train model
+        model.fit(X_train, y_train)
+
+        return model, X_test, y_test
     ### END FUNCTION
     return (train_crop_classifier,)
 
@@ -378,7 +438,33 @@ def _():
     ### START FUNCTION
     def plot_confusion_matrix(model, X_test, y_test, class_names):
         # Your code here
-        pass
+        y_pred = model.predict(X_test)
+        
+        # Calculate confusion matrix
+        cm = confusion_matrix(
+            y_test,
+            y_pred
+        )
+    
+        # Create figure
+        plt.figure(figsize=(12, 10))
+    
+        # Plot confusion matrix
+        disp = ConfusionMatrixDisplay(
+            confusion_matrix=cm,
+            display_labels=class_names
+        )
+    
+        disp.plot(
+            cmap="Blues",
+            values_format="d",
+            ax=plt.gca()
+        )
+    
+        plt.tight_layout()
+        plt.show()
+    
+        return cm
     ### END FUNCTION
     return (plot_confusion_matrix,)
 
@@ -490,7 +576,56 @@ def _():
     ### START FUNCTION
     def upsample_minority_classes(df_prepared, feature_cols):
         # Your code here
-        pass
+        print("Before balancing:")
+        print(df_prepared["Crop_encoded"].value_counts().sort_index())
+    
+        # Identify majority class size
+        n = df_prepared["Crop_encoded"].value_counts().max()
+    
+        # Store each class after resampling
+        balanced_classes = []
+    
+        for class_label in df_prepared["Crop_encoded"].unique():
+    
+            class_data = df_prepared[
+                df_prepared["Crop_encoded"] == class_label
+            ]
+    
+            # Upsample minority classes
+            if len(class_data) < n:
+                class_data = resample(
+                    class_data,
+                    replace=True,
+                    n_samples=n,
+                    random_state=42
+                )
+    
+            balanced_classes.append(class_data)
+    
+        # Combine all classes
+        balanced_df = pd.concat(
+            balanced_classes,
+            ignore_index=True
+        )
+    
+        # Keep features and target
+        balanced_df = balanced_df[
+            feature_cols + ["Crop_encoded"]
+        ]
+    
+        print("\nAfter balancing:")
+        print(
+            balanced_df["Crop_encoded"]
+            .value_counts()
+            .sort_index()
+        )
+    
+        print(
+            "\nBalanced DataFrame shape:",
+            balanced_df.shape
+        )
+    
+        return balanced_df
     ### END FUNCTION
     return (upsample_minority_classes,)
 
@@ -607,7 +742,69 @@ def _():
     ### START FUNCTION
     def compare_classifiers(df_balanced, feature_cols, le):
         # Your code here
-        pass
+        # Define features and target
+        X = df_balanced[feature_cols]
+        y = df_balanced["Crop_encoded"]
+    
+        # Train-test split
+        X_train, X_test, y_train, y_test = train_test_split(
+            X,
+            y,
+            test_size=0.20,
+            random_state=42,
+            stratify=y
+        )
+    
+        # Define models
+        models = {
+            "Logistic Regression": LogisticRegression(
+                max_iter=1000
+            ),
+            "Random Forest": RandomForestClassifier(
+                n_estimators=100,
+                random_state=42
+            )
+        }
+    
+        results = []
+    
+        # Train and evaluate each model
+        for name, model in models.items():
+    
+            model.fit(X_train, y_train)
+    
+            y_pred = model.predict(X_test)
+    
+            report = classification_report(
+                y_test,
+                y_pred,
+                target_names=le.classes_,
+                output_dict=True
+            )
+    
+            accuracy = accuracy_score(
+                y_test,
+                y_pred
+            )
+    
+            macro_f1 = report["macro avg"]["f1-score"]
+    
+            print(f"\n{name}")
+            print("=" * len(name))
+            print(
+                classification_report(
+                    y_test,
+                    y_pred,
+                    target_names=le.classes_
+                )
+            )
+    
+            results.append({
+                "model": name,
+                "accuracy": accuracy,
+                "macro_f1": macro_f1
+            })
+        return pd.DataFrame(results)
     ### END FUNCTION
     return (compare_classifiers,)
 
@@ -668,7 +865,72 @@ def _():
     ### START FUNCTION
     def crop_confidence_report(model, X_test, y_test, le):
         # Your code here
-        pass
+        y_pred = model.predict(X_test)
+        
+        # Generate classification report as a dictionary
+        report = classification_report(
+            y_test,
+            y_pred,
+            target_names=le.classes_,
+            output_dict=True
+        )
+    
+        # Keep only individual crop classes
+        crop_rows = {
+            crop: metrics
+            for crop, metrics in report.items()
+            if crop in le.classes_
+        }
+    
+        # Build DataFrame
+        report_df = pd.DataFrame(crop_rows).T.reset_index()
+    
+        # Rename columns
+        report_df = report_df.rename(
+            columns={
+                "index": "crop",
+                "f1-score": "f1_score"
+            }
+        )
+    
+        # Keep required columns
+        report_df = report_df[
+            [
+                "crop",
+                "precision",
+                "recall",
+                "f1_score",
+                "support"
+            ]
+        ]
+    
+        # Sort by F1-score
+        report_df = report_df.sort_values(
+            "f1_score",
+            ascending=False
+        ).reset_index(drop=True)
+    
+        # Plot F1-score
+        fig, ax = plt.subplots(figsize=(9, 6))
+    
+        report_df.sort_values("f1_score").plot(
+            kind="barh",
+            x="crop",
+            y="f1_score",
+            ax=ax,
+            legend=False
+        )
+    
+        ax.set(
+            title="F1 Score by Crop",
+            xlabel="F1 Score",
+            ylabel="Crop"
+        )
+    
+        plt.tight_layout()
+        plt.show()
+    
+        return report_df
     ### END FUNCTION
     return (crop_confidence_report,)
 
