@@ -13,52 +13,9 @@ def style_plot(
     tick_size=9,
     title_weight="bold",
 ):
-    """
-    Apply consistent, publication-quality styling to a Matplotlib Axes.
-
-    Parameters
-    ----------
-    ax : matplotlib.axes.Axes
-        The Axes object to style.
-
-    title : str, optional
-        Plot title.
-
-    xlabel : str, optional
-        X-axis label.
-
-    ylabel : str, optional
-        Y-axis label.
-
-    grid : bool, default=True
-        Whether to display grid lines.
-
-    remove_spines : bool, default=True
-        Whether to remove the top and right spines.
-
-    title_size : int, default=16
-        Font size of the title.
-
-    label_size : int, default=12
-        Font size of axis labels.
-
-    tick_size : int, default=10
-        Font size of tick labels.
-
-    title_weight : str, default="bold"
-        Font weight of the title.
-
-    Returns
-    -------
-    matplotlib.axes.Axes
-        The styled Axes object.
-    """
 
     if ax is None:
         raise ValueError("ax cannot be None.")
-
-    # Background
-    ax.set_facecolor("white")
 
     # Title and axis labels
     if title:
@@ -112,7 +69,12 @@ def style_plot(
         ax.spines["top"].set_visible(False)
         ax.spines["right"].set_visible(False)
 
+        for spine in ax.spines.values():
+            spine.set_linewidth(1.2)
+
     # Improve layout
     ax.margins(x=0.02)
+
+    ax.set_facecolor("whitesmoke")
 
     return ax

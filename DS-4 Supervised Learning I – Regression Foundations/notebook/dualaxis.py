@@ -21,62 +21,7 @@ def dual_axis_plot(
     legend1_loc="upper left",
     legend2_loc="upper center",
 ):
-    """
-    Create a publication-quality dual-axis line plot.
-
-    Parameters
-    ----------
-    x1, y1 : array-like
-        X and Y values for the primary y-axis.
-
-    x2, y2 : array-like
-        X and Y values for the secondary y-axis.
-
-    label1 : str
-        Legend label for the primary series.
-
-    label2 : str
-        Legend label for the secondary series.
-
-    xlabel : str, optional
-        X-axis label.
-
-    ylabel1 : str, optional
-        Primary y-axis label.
-
-    ylabel2 : str, optional
-        Secondary y-axis label.
-
-    title : str, optional
-        Plot title.
-
-    color1 : str, default="orange"
-        Color of the primary series.
-
-    color2 : str, optional
-        Color of the secondary series.
-
-    figsize : tuple, default=(10, 5)
-        Figure size.
-
-    linewidth : float, default=2
-        Width of both lines.
-
-    grid : bool, default=True
-        Whether to display grid lines.
-
-    legend1_loc : str, default="upper left"
-        Location of the primary legend.
-
-    legend2_loc : str, default="upper center"
-        Location of the secondary legend.
-
-    Returns
-    -------
-    fig, ax, ax2
-        Figure and both axes.
-    """
-
+    
     # Validate input lengths
     if len(x1) != len(y1):
         raise ValueError("x1 and y1 must have the same length.")
@@ -182,6 +127,7 @@ def dual_axis_plot(
         frameon=False
     )
 
+    ax.set_facecolor("whitesmoke")
     # Improve layout
     fig.tight_layout()
 
